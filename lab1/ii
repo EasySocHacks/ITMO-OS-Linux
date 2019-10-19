@@ -1,3 +1,5 @@
+!/bin/bash
+
 max=$1;
 
 if [[ $max < $2 ]];

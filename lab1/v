@@ -1,3 +1,5 @@
+!/bin/bash
+
 echo "To interact with menu enter 1-4 number";
 echo "1) Open nano"
 echo "2) Open vi"
