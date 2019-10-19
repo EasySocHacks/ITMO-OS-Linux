@@ -1,0 +1,4 @@
+if [[ "$1" == "$2" ]];
+then echo "first argument \"$1\" equals second argument \"$2\"";
+else echo "first argument \"$1\" is not equal to second argument \"$2\"";
+fi;

@@ -1,0 +1,27 @@
+echo "To interact with menu enter 1-4 number";
+echo "1) Open nano"
+echo "2) Open vi"
+echo "3) Open links"
+echo "4) Close menu"
+
+while true;
+do
+	read inputNumber;
+	case $inputNumber in
+	1 )
+	nano;
+	;;
+	2 )
+	vi;
+	;;
+	3 )
+	links;
+	;;
+	4 )
+	break;
+	;;
+	* )
+	echo "Usage: bash v (1-4)";
+	;;
+	esac;
+done;

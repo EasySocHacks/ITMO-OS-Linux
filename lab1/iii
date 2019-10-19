@@ -1,0 +1,12 @@
+answer="";
+
+while true;
+do
+	read inputString;
+	if [[ $inputString == "q" ]];
+	then break;
+	else answer=$answer"$inputString";
+	fi;
+done;
+
+echo $answer;

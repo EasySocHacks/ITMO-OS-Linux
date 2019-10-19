@@ -1,0 +1,10 @@
+answer=0;
+
+while true;
+do
+	read inputNumber;
+	if [[ inputNumber\%2 -eq 0 ]];
+	then echo $answer; exit;
+	else let answer=answer+1;
+	fi;
+done;
