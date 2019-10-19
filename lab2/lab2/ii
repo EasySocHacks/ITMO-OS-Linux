@@ -1,0 +1,15 @@
+#!/bin/bash
+warning_old_substring="(WW)";
+information_old_substring="(II)";
+
+warning_new_substring="Warning:";
+information_new_substring="Information:";
+
+original_file="/var/log/Xorg.0.log";
+new_file="full.log";
+
+echo "" > "$new_file";
+grep "$warning_old_substring" "$original_file" | sed "s/$warning_old_substring/$warning_new_substring/" >> "$new_file";
+grep "$information_old_substring" "$original_file" | sed "s/$information_old_substring/$information_new_substring/" >> "$new_file";
+
+cat "$new_file";

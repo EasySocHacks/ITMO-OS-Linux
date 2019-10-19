@@ -1,0 +1,4 @@
+#!/bin/bash
+
+users_file="/etc/passwd";
+awk -F ":" '{printf("%d %s\n", $3, $1)}' "$users_file" | sort -n;

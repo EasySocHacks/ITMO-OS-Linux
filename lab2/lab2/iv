@@ -1,0 +1,6 @@
+#!/bin/bash
+
+directory="/bin";
+regex="^#! *[a-zA-Z0-9\/\.]\+";
+
+grep -o -a -r -h "$regex" "$directory" | sed "s/#! */#!/" | sort | uniq -c | sort -r -n | head -n 1 | awk -F " " '{printf("%s\n", $2)}' | grep -o "[^#!]*";

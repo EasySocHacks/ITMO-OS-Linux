@@ -1,0 +1,4 @@
+#!/bin/bash
+
+man bash | grep -o "[[:alpha:]]\{4,\}" | sort -i | uniq -c | sort -n -r | awk -F " " '{printf("%s\n", $2)}' | head -n 3;
+

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+directory_path="/etc";
+emails_file="emails.lst";
+
+email_pattern="[A-Za-z0-9\.\_\%\+\-]\+@[a-z0-9.-]\+.[a-z]\{2,4\}";
+
+grep -a -h -r -o "$email_pattern" "$directory_path" | awk '{ printf("%s,", $1) }' > "$emails_file";
