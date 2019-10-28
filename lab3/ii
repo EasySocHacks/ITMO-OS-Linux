@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ps -e -o pid,stime --sort -start_time | head -n 2 | awk '{if (NR != 1) {printf("%s\n", $1)}}';
+

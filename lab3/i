@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ps -e -u "root" -o pid,command | awk '{if (NR != 1) {printf("%s:%s\n", $1, $2)}}' > i.log;
+wc -l i.log | awk '{printf("%s\n", $1)}';

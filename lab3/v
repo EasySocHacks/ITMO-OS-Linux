@@ -1,0 +1,20 @@
+#!/bin/bash
+
+ans="";
+
+for pid in $(ps -e -o pid | tail -n +2); do
+	ppid=$(grep -E -h -s "PPid" "/proc/$pid/status" | grep -o -E "[[:digit:]]+");
+	spleepavg=$(grep -E -i -h -s "avg_atom" "/proc/$pid/sched" | grep -o -E "[[:digit:]]+");
+
+	if [[ -z $sleepavg ]]; then
+		sleepavg="0";
+	fi;
+
+	if [[ -z $ppid ]]; then
+		ppid="?";
+	fi;
+
+	ans=$ans"ProcessID=$pid : Parent_ProcessID=$ppid : Average_Sleeping_Time=$sleepavg"$'\n';
+done;
+
+echo "$ans" | sort -t " " -k2 > v.log;

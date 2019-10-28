@@ -1,0 +1,33 @@
+#!/bin/bash
+
+previousPPID="Parent_ProcessID=0";
+sleepavgSumm=0;
+couner=1;
+
+echo "" > vi.log;
+
+while read line; do
+	currentPPID=$(echo $line | awk '{printf("%s\n", $3)}');
+
+	ppid=$(echo $previousPPID | sed "s/Parent_ProcessID=//");
+
+	if [[ $currentPPID == $previousPPID ]]; then
+		let counter+=1;
+		let sleepavgSumm+=$(echo $line | awk '{printf("%s\n", $5)}' | sed "s/Average_Sleeping_Time=//");
+		echo $line >> vi.log;
+	else
+		let ans=$sleepavgSumm\/$counter;
+		echo "Average_Sleeping_Children_of_ParentID=$ppid is $ans" >> vi.log;
+		counter=1;
+		sleepavgSumm=0;
+
+		echo $line >> vi.log;
+	fi;
+
+	previousPPID=$currentPPID;
+done < v.log;
+
+
+ppid=$(echo $previousPPID | sed "s/Parent_ProcessID=//");
+let ans=$sleepavgSumm/$counter;
+echo "Average_Sleeping_Children_of_ParentID=$ppid is $ans" >> vi.log;
