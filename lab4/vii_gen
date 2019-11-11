@@ -1,0 +1,24 @@
+#!/bin/bash
+
+while true;
+do
+	read line;
+
+	case $line in
+		"+")
+			kill -USR1 $(cat vii_trash);
+		;;
+
+		"*")
+			kill -USR2 $(cat vii_trash);
+		;;
+
+		"TERM")
+			kill -SIGTERM $(cat vii_trash);
+			exit 0;
+		;;
+
+		*)
+		;;
+	esac;
+done;

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+echo $$ > vii_trash;
+
+num=1;
+op="+";
+
+setPlus() {
+	op="+";
+}
+
+setMultiply() {
+	op="*";
+}
+
+setExit() {
+	op="?";
+}
+
+trap 'setPlus' USR1;
+trap 'setMultiply' USR2;
+trap 'setExit' SIGTERM;
+
+while true;
+do
+	case $op in
+		"?")
+			echo "Exit the program";
+			exit 0;
+		;;
+
+		*)
+			let num=2$op$num;
+			echo $num;
+			sleep 1;
+		;;
+	esac;
+done;

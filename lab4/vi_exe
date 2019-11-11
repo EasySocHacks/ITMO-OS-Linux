@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo $$ > vi_trash;
+
+STATUS="OK";
+changeStatus()
+{
+	STATUS="EXIT";
+}
+trap 'changeStatus' SIGTERM;
+
+x=0;
+while true;
+do
+	case $STATUS in
+		"OK")
+			echo $x;
+			let x=$x+1;
+			sleep 1;
+		;;
+
+		"EXIT")
+			echo "Exit the program";
+			exit 0;
+		;;
+	esac;
+done;

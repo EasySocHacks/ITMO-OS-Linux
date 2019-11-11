@@ -1,0 +1,16 @@
+#!/bin/bash
+
+while true;
+do
+	read line;
+
+	case $line in
+		"TERM")
+			kill -SIGTERM $(cat vi_trash);
+			exit 0;
+		;;
+
+		*)
+		;;
+	esac;
+done;

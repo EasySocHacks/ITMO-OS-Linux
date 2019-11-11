@@ -1,0 +1,19 @@
+#!/bin/bash
+
+while true;
+do
+	read line;
+	echo "$line" >> v_op;
+
+	if [[ "$line" == "QUIT" ]];
+	then
+		echo "Quit the program";
+		exit 0;
+	fi;
+
+	if [[ $(echo "$line" | grep -E -o "^([0-9]+)|\*|\+$" | wc -l) == 0 ]];
+	then
+		echo "Usage: +|*|[0-9]+";
+		exit 1;
+	fi;
+done;
