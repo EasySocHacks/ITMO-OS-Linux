@@ -1,0 +1,59 @@
+#!/bin/bash
+
+maxTime="";
+
+for dir in /home/user/*
+do
+	if [[ ! -d "$dir" ]];
+	then
+		continue;
+	fi;
+
+	dirName=$(echo "$dir" | awk -F "/" '{ print $'$(echo "$dir" | awk -F "/" '{ print NF }')' }');
+	dirNameCompSize=$(echo "$dirName" | awk -F "-" '{ print NF }');
+	dirNameFirstComp=$(echo "$dirName" | awk -F "-" '{ print $1 }');
+	dateName=$(echo "$dirName" | sed "s/Backup-//g");
+
+	if [[ $dirNameCompSize -ne 4 || "$dirNameFirstComp" != "Backup" || ! $(date -d "$dateName") ]];
+	then
+		continue;
+	fi;
+
+	if [[ $maxTime == "" || $(date -d "$dateName" +%s) -gt $maxTime ]];
+	then
+		maxTime=$(date -d "$dateName" +%s);
+	fi;
+done;
+
+if [[ -z "$maxTime" ]];
+then
+	echo "Nothing to recover";
+	exit 0;
+fi;
+
+dirName=/home/user/Backup-$(date -d @"$maxTime" +%F);
+
+for file in $(find "$dirName" -type f)
+do
+	fileName=$(echo "$file" | awk -F "/" '{ print $'$(echo "$file" | awk -F "/" '{ print NF }')' }');
+	fileNameCompSize=$(echo "$fileName" | awk -F "." '{ print NF }');
+	fileNameLastComp=$(echo "$fileName" | awk -F "." '{ print $'$fileNameCompSize' }');
+
+	if [[ $(echo "$fileNameLastComp" | awk -F "-" '{ print NF }') == 3 &&  $(date -d "$fileNameLastComp") ]];
+	then
+		continue;
+	fi;
+
+	pathName=$(echo "$file" | sed -E "s|"$(echo "$dirName")"||g");
+	pathName=$(echo "$pathName" | sed -E "s|"$(echo "$fileName\$")"||");
+
+	mkdir -p "/home/user/restore";
+
+	if [[ "$pathName" != "/" ]];
+	then
+		mkdir -p "/home/user/restore$pathName";
+	fi;
+
+	touch "/home/user/restore$pathName$fileName";
+	cp "$file" "/home/user/restore$pathName$fileName";
+done;

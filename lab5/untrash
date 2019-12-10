@@ -1,0 +1,71 @@
+#!/bin/bash
+
+file="$1";
+
+if [[ -z "$file" ]];
+then
+	echo "Usgae: untrash <filename>";
+	echo "DESCRIPTION:";
+	echo "filename: name of file to recover";
+	exit 1;
+fi;
+
+while read line <&5;
+do
+	fileFrom=$(echo "$line" | awk -F " " '{ print $'$(echo "$line" | awk -F " " '{ print NF }')' }');
+	fileTo=$(echo "$line" | sed "s|$fileFrom||g");
+
+	fileFromName=$(echo "$fileFrom" | awk -F "/" '{ print $'$(echo "$fileFrom" | awk -F "/" '{ print NF }')' }');
+	fileToName=$(echo "$fileTo" | awk -F "/" '{ print $'$(echo "$fileTo" | awk -F "/" '{ printf NF }')' }');
+	directoryTo=$(echo "$fileTo" | sed "s/$fileToName$//g");
+
+	if [[ "$fileToName" != "$file" ]];
+	then
+		continue;
+	fi;
+
+	while true;
+	do
+		echo "";
+		echo "$line";
+		echo "Recover current file [y/n] ?"
+
+		read input;
+
+		case "$input" in
+	                "n")
+				break;
+			 ;;
+
+			"y")
+				if [[ ! -d "$directoryTo" ]];
+				then
+					echo "File will be recover to home directory";
+					directoryTo="~/";
+				fi;
+
+				if [[ -f "$directoryTo$fileToName" ]];
+				then
+					echo "File $directoryTo$fileToName is already exists".
+					echo "Delete this file or try to recover another file";
+					exit 2;
+				fi;
+
+				ln ~/.trash/"$fileFromName" "$directoryTo$fileToName";
+				rm ~/.trash/"$fileFromName";
+
+				newLog=$(cat ~/.trash.log | awk -F "$line" '{ printf("%s\n%s", $1, $2) }');
+				echo "$newLog" > ~/.trash.log;
+
+				exit 0;
+        	        ;;
+
+                	*)
+				continue;
+	                ;;
+		esac;
+
+	done;
+done 5< ~/.trash.log;
+
+echo "No such file with this filename to recover";

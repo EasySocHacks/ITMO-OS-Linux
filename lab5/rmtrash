@@ -1,0 +1,28 @@
+#!/bin/bash
+
+file="$1";
+currDirectory=$(pwd);
+
+if [[ ! -f ./"$1" ]];
+then
+	echo "Usage: rmtrash <filename>";
+	echo "DESCRIPTION:";
+	echo "filename: name of a existing file in current directory";
+	exit 0;
+fi;
+
+if [[ ! -d ~/.trash ]];
+then
+	mkdir ~/.trash;
+fi;
+
+name=0;
+while [ -f ~/.trash/$name ];
+do
+	let name=$name+1;
+done;
+
+ln ./"$file" ~/.trash/$name;
+rm ./"$file";
+
+echo "$currDirectory"/"$file" "~/.trash/$name" >> ~/.trash.log;

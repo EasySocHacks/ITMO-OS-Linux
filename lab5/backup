@@ -1,0 +1,117 @@
+#!/bin/bash
+
+nowDate=$(date +%F);
+
+mode="CREATE";
+
+for file in /home/user/*;
+do
+	if [[ -d "$file" ]];
+	then
+		directoryName=$(echo "$file" | awk -F "/" '{ print $'$(echo "$file" | awk -F "/" '{ print NF }')' }');
+		splitSize=$(echo "$directoryName" | awk -F "-" '{ print NF }');
+
+		if [[ $splitSize -ne 4 || $(echo "$file" | awk -F "/" '{ print NF }') -ne 4 || $(echo "$directoryName" | awk -F "-" '{ print $1 }') -ne "Backup" ]];
+		then
+			continue;
+		fi;
+
+		fileDate=$(echo "$directoryName" | sed "s|Backup-||g");
+
+		if [[ ! $(date -d "$fileDate") ]];
+		then
+			continue;
+		fi;
+
+		let dateDiff=$(date -d "$nowDate" +%j)-$(date -d "$fileDate" +%j)
+
+		if [[ $(date -d "$nowDtae" +%Y) -ne $(date -d "$fileDate" +%Y) || $dateDiff -le 7 ]];
+		then
+			mode="ADD";
+			break;
+		fi;
+	fi;
+done;
+
+case "$mode" in
+	"CREATE")
+		mkdir /home/user/Backup-"$nowDate";
+		dirName=/home/user/Backup-"$nowDate";
+
+		echo "backup $dirName created at $nowDate" >> /home/user/backup-report;
+
+		for file in $(find /home/user/source/ -type f);
+		do
+			filePathAndName=$(echo "$file" | sed "s|"$(echo /home/user/source/)"||g");
+			filePath=$(echo "$filePathAndName" | sed "s|"$(echo "$filePathAndName" | awk -F "/" '{print $'$(echo "$filePathAndName" | awk -F "/" '{print NF}')'}')"||g");
+			mkdir -p "$dirName"/"$filePath";
+			cp "$file" "$dirName"/"$filePathAndName";
+			echo "$file""->""$dirName"/"$filePathAndName" >> /home/user/backup-report;
+		done;
+
+		echo "" >> /home/user/backup-report;
+	;;
+
+	"ADD")
+		dirName=/home/user/Backup-"$fileDate";
+
+		echo "backup $dirName updated at $nowDate" >> /home/user/backup-report;
+
+		messageNewFiles="";
+		messageOldFiles="";
+
+		for file in $(find /home/user/source/ -type f);
+		do
+			filePathAndName=$(echo "$file" | sed "s|"$(echo /home/user/source/)"||g");
+
+			if [[ -f "$dirName"/"$filePathAndName" ]];
+			then
+				sourceFileSize=$(stat "$file" -c%s);
+				targetFileSize=$(stat "$dirName"/"$filePathAndName" -c%s);
+
+				if [[ $sourceFileSize -ne $targetFileSize ]];
+				then
+					fileName=$(echo "$filePathAndName" | awk -F "/" '{ print $'$(echo "$filePathAndName" | awk -F "/" '{ print NF }')' }');
+					filePath=$(echo "$filePathAndName" | sed "s|"$(echo "$fileName")"||g");
+
+					mkdir -p "$dirName"/"$filePath";
+					touch "$dirName"/"$filePathAndName"."$nowDate";
+					cp "$dirName"/"$filePathAndName" "$dirName"/"$filePathAndName"."$nowDate";
+					cp "$file" "$dirName"/"$filePathAndName";
+
+					if [[ "$messageOldFiles" == "" ]];
+					then
+						messageOldFiles="$file""->""$dirName"/"$filePathAndName"" $dirName"/"$filePathAndName"."$nowDate";
+					else
+						messageOldFiles="$messageOldFiles""\n""$file""->""$dirName"/"$filePathAndName"" $dirName"/"$filePathAndName"."$nowDate";
+					fi;
+				fi;
+			else
+				fileName=$(echo "$filePathAndName" | awk -F "/" '{ print $'$(echo "$filePathAndName" | awk -F "/" '{ print NF }')' }');
+				filePath=$(echo "$filePathAndName" | sed "s|"$(echo "$fileName")"||g");
+
+				mkdir -p "$dirName"/"$filePath";
+                        	cp "$file" "$dirName"/"$filePathAndName";
+
+				if [[ "$messageNewFiles" == "" ]];
+				then
+					messageNewFiles="$file""->""$dirName"/"$filePathAndName";
+				else
+					messageNewFiles="$messageNewFiles""\n""$file""->""$dirName"/"$filePathAndName";
+				fi;
+			fi;
+		done;
+
+		if [[ "$messageNewFiles" != "" ]];
+		then
+			echo -e "$messageNewFiles" >> /home/user/backup-report;
+		fi;
+
+		if [[ "$messageOldFiles" != "" ]];
+		then
+			echo -e "$messageOldFiles" >> /home/user/backup-report;
+		fi;
+
+		echo "" >> /home/user/backup-report;
+	;;
+esac;
