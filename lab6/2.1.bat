@@ -1,0 +1,1 @@
+HOSTNAME > C:\LAB6\hostname.txt

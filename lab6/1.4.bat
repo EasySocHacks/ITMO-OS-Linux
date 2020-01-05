@@ -1,0 +1,1 @@
+del C:\LAB6\ver C:\LAB6\systeminfo_free C:\LAB6\systeminfo_used C:\LAB6\diskpart

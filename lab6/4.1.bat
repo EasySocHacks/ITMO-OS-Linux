@@ -1,0 +1,1 @@
+driverquery /FO table /NH > C:/LAB6/drivers

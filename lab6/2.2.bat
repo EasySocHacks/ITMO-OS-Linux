@@ -1,0 +1,1 @@
+copy /Z C:\cd\smth \\EasyHacks\temp

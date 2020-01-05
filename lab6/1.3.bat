@@ -1,0 +1,1 @@
+type C:\LAB6\* > C:\LAB6\all

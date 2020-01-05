@@ -1,0 +1,1 @@
+tasklist | findstr "copy.exe" & taskkill /f /im "copy.exe"

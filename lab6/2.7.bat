@@ -1,0 +1,1 @@
+type "D:\Os lab\2.*.bat" > C:\LAb6\allcmd_2

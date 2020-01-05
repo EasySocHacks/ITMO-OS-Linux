@@ -1,0 +1,1 @@
+fc C:\LAB6\services C:\LAB6\new_services > C:\LAB6\services_diff

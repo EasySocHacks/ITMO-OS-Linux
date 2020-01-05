@@ -1,0 +1,1 @@
+type "D:\Os lab\3.*.bat" > C:\LAb6\allcmd_3

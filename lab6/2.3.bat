@@ -1,0 +1,1 @@
+schtasks /create /K /SC minute /DU 17:24 /TN scheduler /TR "D:\OS lab\2.2.bat"
